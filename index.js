@@ -1,63 +1,45 @@
-require('dotenv').config(); // Esto carga el archivo .env
-const { Client, GatewayIntentBits } = require('discord.js');
+require('dotenv').config();
+const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const fs = require('fs');
+const path = require('path');
 
-// Creamos el cliente con los permisos necesarios
-const client = new Client({ 
+const client = new Client({
     intents: [
-        GatewayIntentBits.Guilds, 
-        GatewayIntentBits.GuildMessages, 
-        GatewayIntentBits.MessageContent
-    ] 
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+    ],
 });
 
-// Evento: Cuando el bot se conecta
-client.once('ready', () => {
-    console.log(`¡Bot encendido como ${client.user.tag}!`);
-});
+// Creamos colecciones para guardar los comandos
+client.commands = new Collection();
 
-// Evento: Cuando alguien escribe un mensaje
-client.on('messageCreate', async (message) => { // Añadimos 'async' para poder usar 'await'
-    if (message.author.bot) return;
+// --- CARGADOR DE COMANDOS ---
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
-    // Comando !hola (el que ya tenías)
-    if (message.content === '!hola') {
-        message.reply('¡Hola! Estoy vivo y funcionando. 🤖');
+for (const file of commandFiles) {
+    const filePath = path.join(commandsPath, file);
+    const command = require(filePath);
+    if ('data' in command && 'execute' in command) {
+        client.commands.set(command.data.name, command);
+    } else {
+        console.log(`[AVISO] El comando en ${filePath} no tiene las propiedades "data" o "execute".`);
     }
+}
 
-    // Comando !limpiar
-    if (message.content.startsWith('!limpiar')) {
-        // Verificamos si el usuario tiene permiso para borrar mensajes
-        if (!message.member.permissions.has('ManageMessages')) {
-            return message.reply('No tienes permiso para borrar mensajes, granuja.');
-        }
+// --- CARGADOR DE EVENTOS ---
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
-        const args = message.content.split(' '); // Dividimos el mensaje por espacios
-        const cantidad = args[1]; // El segundo elemento (ej: 10 o all)
-
-        if (!cantidad) return message.reply('Dime cuántos mensajes quieres borrar. Ej: `!limpiar 10` o `!limpiar all`');
-
-        try {
-            if (cantidad === 'all') {
-                // Para borrar "todo", borramos el máximo permitido por Discord de una vez (100)
-                // Nota: Discord solo permite borrar mensajes de menos de 14 días de antigüedad.
-                const deleted = await message.channel.bulkDelete(100, true);
-                message.channel.send(`🧹 He limpiado el canal (borrados ${deleted.size} mensajes recientes).`).then(msg => setTimeout(() => msg.delete(), 5000));
-            } else {
-                const num = parseInt(cantidad);
-                if (isNaN(num) || num <= 0 || num > 100) {
-                    return message.reply('Por favor, pon un número entre 1 y 100.');
-                }
-
-                // Borramos los mensajes (incluyendo el comando que acabas de escribir)
-                const deleted = await message.channel.bulkDelete(num, true);
-                message.channel.send(`🧹 Borrados ${deleted.size} mensajes.`).then(msg => setTimeout(() => msg.delete(), 5000));
-            }
-        } catch (error) {
-            console.error(error);
-            message.reply('Hubo un error al intentar borrar los mensajes. (Puede que sean más viejos de 14 días).');
-        }
+for (const file of eventFiles) {
+    const filePath = path.join(eventsPath, file);
+    const event = require(filePath);
+    if (event.once) {
+        client.once(event.name, (...args) => event.execute(...args));
+    } else {
+        client.on(event.name, (...args) => event.execute(...args));
     }
-});
+}
 
-// Login con tu Token (Pégalo aquí entre las comillas)
 client.login(process.env.DISCORD_TOKEN);
