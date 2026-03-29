@@ -26,12 +26,12 @@ module.exports = {
                 .skip((page - 1) * limit)
                 .limit(limit);
 
-            const generateEmbed = (p) => {
-                const start = (p - 1) * limit;
-                const end = Math.min(start + limit, totalComisiones);
-
-                const list = comisiones.map(c =>
-                    `**Nº ${c.censo}** - ${c.nombre} ${c.fundacion > 0 ? `(*Fundada en ${c.fundacion}*)` : ''}`
+                const generateEmbed = (p) => {
+                    const start = (p - 1) * limit;
+                    const end = Math.min(start + limit, totalComisiones);
+    
+                    const list = comisiones.map(c => 
+                    `**${c.censo}** - ${c.nombre} - ${c.fundacion > 0 ? c.fundacion : 'Desconocido'}`
                 ).join('\n');
 
                 return new EmbedBuilder()
@@ -78,9 +78,9 @@ module.exports = {
                     .limit(limit);
 
                 const updateEmbed = (p) => {
-                    const list = nuevasComisiones.map(c =>
-                        `**Nº ${c.censo}** - ${c.nombre} ${c.fundacion > 0 ? `(*Fundada en ${c.fundacion}*)` : ''}`
-                    ).join('\n');
+                    const list = nuevasComisiones.map(c => 
+                    `**${c.censo}** - ${c.nombre} - ${c.fundacion > 0 ? c.fundacion : 'Desconocido'}`
+                ).join('\n');
 
                     return new EmbedBuilder()
                         .setTitle('📇 Censo Oficial Comisiones Falleras (JCF)')
