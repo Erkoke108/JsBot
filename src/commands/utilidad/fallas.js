@@ -24,22 +24,22 @@ module.exports = {
         const soloPrimeros = interaction.options.getBoolean('solo_primeros') ?? false;
 
         try {
+            const añoOriginal = interaction.options.getInteger('año');
             let query = {};
-            if (año) query.año = año;
+            if (añoOriginal) query.año = añoOriginal;
             if (premioNum) query.premio = premioNum;
             if (soloPrimeros) query.premio = 1;
+
+            // Redirección especial para el año 2020 (Pandemia)
+            let esRedireccion2020 = false;
+            if (añoOriginal === 2020) {
+                query.año = 2021;
+                esRedireccion2020 = true;
+            }
 
             const premios = await FallaPremio.find(query).sort({ año: -1, premio: 1 });
 
             if (premios.length === 0) {
-                // Si el año es 2020 que salga un mensaje de que ese año no hubo fallas
-                if (año === 2020) {
-                    return interaction.reply({
-                        content: '💡 Este año no hubo fallas',
-                        flags: [MessageFlags.Ephemeral]
-                    });
-                }
-
                 return interaction.reply({
                     content: '❌ No se encontraron premios con esos criterios.',
                     flags: [MessageFlags.Ephemeral]
@@ -49,8 +49,10 @@ module.exports = {
             // Si hay un solo resultado, mostramos un embed detallado con imagen grande
             if (premios.length === 1) {
                 const p = premios[0];
+                const añoDisplay = esRedireccion2020 ? "2020-2021" : p.año;
+
                 const embed = new EmbedBuilder()
-                    .setTitle(`🏆 ${p.premio}º Premio Sección Especial ${p.año}`)
+                    .setTitle(`🏆 ${p.premio}º Premio Sección Especial ${añoDisplay}`)
                     .setDescription(`**Comisión:** ${p.comision}\n**Censo:** ${p.censo}\n**Artista:** ${p.artista}\n**Lema:** "${p.lema}"`)
                     .setColor('#ff9900')
                     .setTimestamp();
@@ -75,8 +77,10 @@ module.exports = {
                     `**${p.premio}º:** ${p.comision} (*${p.lema}*)`
                 ).join('\n');
 
+                const añoDisplay = (esRedireccion2020 && a == 2021) ? "2020-2021" : a;
+
                 const embed = new EmbedBuilder()
-                    .setTitle(`🏆 Fallas Sección Especial - Año ${a}`)
+                    .setTitle(`🏆 Fallas Sección Especial - Año ${añoDisplay}`)
                     .setDescription(lista)
                     .setColor('#ff9900');
 
