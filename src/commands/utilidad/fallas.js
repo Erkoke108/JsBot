@@ -7,7 +7,11 @@ module.exports = {
         .setDescription('Consulta los premios de las Fallas de Sección Especial.')
         .addIntegerOption(option => 
             option.setName('año')
-                .setDescription('El año a consultar')
+                .setDescription('El año a consultar (ej. 2026)')
+                .setRequired(false))
+        .addIntegerOption(option =>
+            option.setName('premio')
+                .setDescription('El número de premio (1-9)')
                 .setRequired(false))
         .addBooleanOption(option =>
             option.setName('solo_primeros')
@@ -16,11 +20,13 @@ module.exports = {
 
     async execute(interaction) {
         const año = interaction.options.getInteger('año');
+        const premioNum = interaction.options.getInteger('premio');
         const soloPrimeros = interaction.options.getBoolean('solo_primeros') ?? false;
 
         try {
             let query = {};
             if (año) query.año = año;
+            if (premioNum) query.premio = premioNum;
             if (soloPrimeros) query.premio = 1;
 
             const premios = await FallaPremio.find(query).sort({ año: -1, premio: 1 });
@@ -32,38 +38,53 @@ module.exports = {
                 });
             }
 
+            // Si hay un solo resultado, mostramos un embed detallado con imagen grande
+            if (premios.length === 1) {
+                const p = premios[0];
+                const embed = new EmbedBuilder()
+                    .setTitle(`🏆 ${p.premio}º Premio Sección Especial ${p.año}`)
+                    .setDescription(`**Comisión:** ${p.comision}\n**Censo:** ${p.censo}\n**Artista:** ${p.artista}\n**Lema:** "${p.lema}"`)
+                    .setColor('#ff9900')
+                    .setTimestamp();
+                
+                if (p.imagen) embed.setImage(p.imagen);
+
+                return await interaction.reply({ embeds: [embed] });
+            }
+
+            // Si hay múltiples resultados, agrupamos por año y mostramos los 3 más recientes con imágenes o lista
             const embeds = [];
-            // Agrupamos por año para mostrar embeds limpios
             const premiosPorAño = premios.reduce((acc, curr) => {
                 if (!acc[curr.año]) acc[curr.año] = [];
                 acc[curr.año].push(curr);
                 return acc;
             }, {});
 
-            const años = Object.keys(premiosPorAño).slice(0, 5); // Limitamos a los 5 años más recientes para no saturar
+            const años = Object.keys(premiosPorAño).sort((a,b) => b-a).slice(0, 3); // Limitamos a 3 años para evitar saturar imágenes
 
             for (const a of años) {
                 const lista = premiosPorAño[a].map(p => 
-                    `**${p.premio}º Premio:** ${p.comision} (Censo ${p.censo})\n*Artista:* ${p.artista} | *Lema:* "${p.lema}"`
-                ).join('\n\n');
+                    `**${p.premio}º:** ${p.comision} (*${p.lema}*)`
+                ).join('\n');
 
                 const embed = new EmbedBuilder()
-                    .setTitle(`🏆 Premios Sección Especial - Año ${a}`)
+                    .setTitle(`🏆 Fallas Sección Especial - Año ${a}`)
                     .setDescription(lista)
-                    .setColor('#ff9900')
-                    .setTimestamp();
+                    .setColor('#ff9900');
+                
+                // Si el primer premio tiene imagen, la ponemos de miniatura
+                const top1 = premiosPorAño[a].find(p => p.premio === 1);
+                if (top1 && top1.imagen) {
+                    embed.setThumbnail(top1.imagen);
+                }
                 
                 embeds.push(embed);
             }
 
-            // Si hay demasiados años (más de 5), avisamos
-            let replyContent = {};
-            if (Object.keys(premiosPorAño).length > 5) {
-                replyContent.content = `⚠️ Se muestran los 5 años más recientes de tu búsqueda.`;
-            }
-            replyContent.embeds = embeds;
-
-            await interaction.reply(replyContent);
+            await interaction.reply({ 
+                content: premios.length > 10 ? `⚠️ Mostrando los resultados más recientes (Total: ${premios.length}).` : null,
+                embeds: embeds 
+            });
 
         } catch (error) {
             console.error('Error al consultar premios de fallas:', error);
@@ -74,3 +95,4 @@ module.exports = {
         }
     },
 };
+
