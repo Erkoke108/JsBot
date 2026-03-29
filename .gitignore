@@ -1,4 +1,4 @@
 node_modules/
 .env
 package-lock.json
-Nuevo Documento de texto.txt
+*.txt

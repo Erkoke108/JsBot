@@ -1,50 +1,27 @@
-const { InteractionType } = require('discord.js');
-const ComandoLog = require('../../models/ComandoLog'); // <--- RUTA VERIFICADA
-
+const { MessageFlags } = require('discord.js');
 module.exports = {
-  name: 'interactionCreate',
-  async execute(interaction, client) {
-    if (interaction.isChatInputCommand()) {
-      const { commands } = client;
-      const { commandName } = interaction;
-      const command = commands.get(commandName);
-      if (!command) return;
+    name: 'interactionCreate',
+    async execute(interaction, client) {
+        // Si no es un comando de barra (/), salimos
+        if (!interaction.isChatInputCommand()) return;
 
-      // --- LOG EN MONGODB (AÑADIDO) ---
-      try {
-        const nuevoRegistro = new ComandoLog({
-          userId: interaction.user.id,
-          username: interaction.user.tag,
-          comando: commandName,
-          fecha: new Date()
-        });
-        await nuevoRegistro.save();
-        console.log(`💾 Log: ${interaction.user.tag} ejecutó /${commandName}`);
-      } catch (error) {
-        console.error('❌ Error al guardar log en MongoDB:', error);
-      }
-      // --------------------------------
+        const command = client.commands.get(interaction.commandName);
 
-      try {
-        await command.execute(interaction, client);
-      } catch (error) {
-        console.error(error);
-        await interaction.reply({
-          content: `Algo salió mal al ejecutar este comando...`,
-          ephemeral: true,
-        });
-      }
-    } else if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
-      const { commands } = client;
-      const { commandName } = interaction;
-      const command = commands.get(commandName);
-      if (!command) return;
+        if (!command) return;
 
-      try {
-        await command.autocomplete(interaction, client);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  },
+        try {
+            // Ejecutamos el comando pasando la interacción y el cliente
+            await command.execute(interaction, client);
+        } catch (error) {
+            console.error(`Error al ejecutar el comando ${interaction.commandName}:`, error);
+            
+            const errorMessage = { content: '❌ Hubo un error al ejecutar este comando.', flags: MessageFlags.Ephemeral };
+            
+            if (interaction.replied || interaction.deferred) {
+                await interaction.followUp(errorMessage);
+            } else {
+                await interaction.reply(errorMessage);
+            }
+        }
+    },
 };
