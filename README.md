@@ -35,6 +35,8 @@ JSBot/
 | **Admin** | `/badge` | Información sobre la insignia de desarrollador | @everyone |
 | **Utilidad**| `/stats` | Estado del bot (RAM, Ping, Uptime) | @everyone |
 | **Utilidad**| `/tiempo` | Consulta el clima en tiempo real | @everyone |
+| **Fallas**  | `/fallas` | Consulta el histórico de premios de la Sección Especial | @everyone |
+| **Fallas**  | `/comisiones` | Consulta el mapa y datos de comisiones desde Open Data Valencia | @everyone |
 
 ## ⚙️ Configuración del Entorno (`.env`)
 
