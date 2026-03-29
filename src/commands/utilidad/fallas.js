@@ -5,7 +5,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('fallas')
         .setDescription('Consulta los premios de las Fallas de Sección Especial.')
-        .addIntegerOption(option => 
+        .addIntegerOption(option =>
             option.setName('año')
                 .setDescription('El año a consultar (ej. 2026)')
                 .setRequired(false))
@@ -32,9 +32,17 @@ module.exports = {
             const premios = await FallaPremio.find(query).sort({ año: -1, premio: 1 });
 
             if (premios.length === 0) {
-                return interaction.reply({ 
-                    content: '❌ No se encontraron premios con esos criterios.', 
-                    flags: [MessageFlags.Ephemeral] 
+                // Si el año es 2020 que salga un mensaje de que ese año no hubo fallas
+                if (año === 2020) {
+                    return interaction.reply({
+                        content: '💡 Este año no hubo fallas',
+                        flags: [MessageFlags.Ephemeral]
+                    });
+                }
+
+                return interaction.reply({
+                    content: '❌ No se encontraron premios con esos criterios.',
+                    flags: [MessageFlags.Ephemeral]
                 });
             }
 
@@ -46,7 +54,7 @@ module.exports = {
                     .setDescription(`**Comisión:** ${p.comision}\n**Censo:** ${p.censo}\n**Artista:** ${p.artista}\n**Lema:** "${p.lema}"`)
                     .setColor('#ff9900')
                     .setTimestamp();
-                
+
                 if (p.imagen) embed.setImage(p.imagen);
 
                 return await interaction.reply({ embeds: [embed] });
@@ -60,10 +68,10 @@ module.exports = {
                 return acc;
             }, {});
 
-            const años = Object.keys(premiosPorAño).sort((a,b) => b-a).slice(0, 3); // Limitamos a 3 años para evitar saturar imágenes
+            const años = Object.keys(premiosPorAño).sort((a, b) => b - a).slice(0, 3); // Limitamos a 3 años para evitar saturar imágenes
 
             for (const a of años) {
-                const lista = premiosPorAño[a].map(p => 
+                const lista = premiosPorAño[a].map(p =>
                     `**${p.premio}º:** ${p.comision} (*${p.lema}*)`
                 ).join('\n');
 
@@ -71,26 +79,26 @@ module.exports = {
                     .setTitle(`🏆 Fallas Sección Especial - Año ${a}`)
                     .setDescription(lista)
                     .setColor('#ff9900');
-                
+
                 // Si el primer premio tiene imagen, la ponemos de miniatura
                 const top1 = premiosPorAño[a].find(p => p.premio === 1);
                 if (top1 && top1.imagen) {
                     embed.setThumbnail(top1.imagen);
                 }
-                
+
                 embeds.push(embed);
             }
 
-            await interaction.reply({ 
+            await interaction.reply({
                 content: premios.length > 10 ? `⚠️ Mostrando los resultados más recientes (Total: ${premios.length}).` : null,
-                embeds: embeds 
+                embeds: embeds
             });
 
         } catch (error) {
             console.error('Error al consultar premios de fallas:', error);
-            await interaction.reply({ 
-                content: '❌ Hubo un error al consultar la base de datos de fallas.', 
-                flags: [MessageFlags.Ephemeral] 
+            await interaction.reply({
+                content: '❌ Hubo un error al consultar la base de datos de fallas.',
+                flags: [MessageFlags.Ephemeral]
             });
         }
     },
