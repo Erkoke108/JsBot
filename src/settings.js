@@ -1,3 +1,3 @@
 module.exports = {
-    logChannelId: "1486483929077645523"
+    logChannelId: "1487851768120344756"
 };
