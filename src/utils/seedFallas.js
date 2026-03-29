@@ -15,23 +15,42 @@ const fallasData = [
     { premio: 9, censo: 28, comision: "Cuba-Literato Azorín", artista: "Carlos Carsí García", lema: "Passant a millor vida", año: 2026, imagen: "https://www.cendradigital.com/wp-content/uploads/9-Falla-Cuba-Literato-Azorin-2026-1.jpg" },
 
     // 2025
-    { premio: 1, censo: 12, comision: "Convent de Jerusalem-Matemàtic Marzal", artista: "David Sánchez Llongo", lema: "Or", año: 2025, imagen: "https://www.cendradigital.com/wp-content/uploads/01-012-Falla-Convento-Jerusalen-Matematico-Marzal-2025-1.jpg" },
-    { premio: 2, censo: 197, comision: "Monestir de Poblet-Aparicio Albiñana (L'Antiga de Campanar)", artista: "Josué Beitia Cardós", lema: "Pangea", año: 2025, imagen: "https://www.cendradigital.com/wp-content/uploads/02-197-Falla-Monestir-de-Poblet-Aparicio-Albinana-2025-1.jpg" },
-    { premio: 3, censo: 9, comision: "Na Jordana", artista: "Mario Gual del Olmo", lema: "El tarot de les flames", año: 2025, imagen: "https://www.cendradigital.com/wp-content/uploads/03-009-Falla-Na-Jordana-2025-1.jpg" },
+    { premio: 1, censo: 12, comision: "Convento Jerusalén-Matemático Marzal", artista: "David Sánchez Llongo", lema: "Or", año: 2025, imagen: "https://www.cendradigital.com/wp-content/uploads/012-Falla-Convento-Jerusalen-2025-768x1024.jpg" },
+    { premio: 2, censo: 197, comision: "L'Antiga de Campanar", artista: "Josué Beitia Cardós", lema: "Pangea", año: 2025, imagen: "https://www.cendradigital.com/wp-content/uploads/197-Falla-Antiga-Campanar-2025.jpg" },
+    { premio: 3, censo: 9, comision: "Na Jordana", artista: "Mario Gual del Olmo", lema: "El tarot de les flames", año: 2025, imagen: "https://www.cendradigital.com/wp-content/uploads/009-Falla-Na-Jordana-2025.jpg" },
 
     // 2024
-    { premio: 1, censo: 197, comision: "Monestir de Poblet-Aparicio Albiñana (L'Antiga de Campanar)", artista: "Josué Beitia", lema: "Canvi Climàtic", año: 2024, imagen: "https://www.cendradigital.com/wp-content/uploads/01-197-Falla-Monestir-de-Poblet-Aparicio-Albinana-2024-1.jpg" },
-    { premio: 2, censo: 22, comision: "Exposició-Misser Mascó", artista: "David Sánchez Llongo", lema: "Sensitiva, descobrint els cinc sentits", año: 2024, imagen: "https://www.cendradigital.com/wp-content/uploads/02-022-Falla-Exposicion-Micer-Masco-2024-1.jpg" },
+    { premio: 1, censo: 197, comision: "L'Antiga de Campanar", artista: "Josué Beitia", lema: "Canvi Climàtic", año: 2024, imagen: "https://www.cendradigital.com/wp-content/uploads/Falla-Antiga-Campanar-2024-01.jpg" },
+    { premio: 2, censo: 22, comision: "Exposición-Micer Mascó", artista: "David Sánchez Llongo", lema: "Sensitiva", año: 2024, imagen: "https://www.cendradigital.com/wp-content/uploads/02-Falla-Exposici%C3%B3n-2024.jpg" },
 
     // 2023
-    { premio: 1, censo: 22, comision: "Exposición-Micer Mascó", artista: "David Sánchez Llongo", lema: "Kromatika", año: 2023, imagen: "https://www.cendradigital.com/wp-content/uploads/2023/03/exposicion-2023.jpg" },
-    { premio: 2, censo: 34, comision: "Plaza del Pilar", artista: "Paco Torres", lema: "We will survive", año: 2023, imagen: "https://www.cendradigital.com/wp-content/uploads/2023/03/pilar-2023.jpg" },
+    { premio: 1, censo: 22, comision: "Exposición-Micer Mascó", artista: "David Sánchez Llongo", lema: "Kromatika", año: 2023, imagen: "http://www.cendradigital.com/wp-content/uploads/01-Falla-Exposici%C3%B3n-2023.jpg" },
+    { premio: 2, censo: 34, comision: "Plaza del Pilar", artista: "Paco Torres", lema: "We will survive", año: 2023, imagen: "http://www.cendradigital.com/wp-content/uploads/02-Falla-Plaza-del-Pilar-2023.jpg" },
 
-    // Primeros Premios Adicionales
-    { premio: 1, censo: 12, comision: "Convento Jerusalén-Matemático Marzal", artista: "Pere Baenas", lema: "2030", año: 2022, imagen: "https://www.cendradigital.com/wp-content/uploads/2022/03/convento-2022.jpg" },
-    { premio: 1, censo: 12, comision: "Convento Jerusalén-Matemático Marzal", artista: "Pere Baenas", lema: "Desenmascarats", año: 2021, imagen: "https://www.cendradigital.com/wp-content/uploads/2021/09/convento-2021.jpg" },
-    { premio: 1, censo: 197, comision: "L'Antiga de Campanar", artista: "Carlos Carsí", lema: "Juga, juga... i voràs", año: 2019, imagen: "https://www.cendradigital.com/wp-content/uploads/2019/03/antiga-2019.jpg" },
-    { premio: 1, censo: 12, comision: "Convento Jerusalén-Matemático Marzal", artista: "Pere Baenas", lema: "Per dalt o per baix", año: 2018, imagen: "https://www.cendradigital.com/wp-content/uploads/2018/03/convento-2018.jpg" }
+    // 2022
+    { premio: 1, censo: 12, comision: "Convento Jerusalén", artista: "Pere Baenas", lema: "2030", año: 2022, imagen: "http://www.cendradigital.com/wp-content/uploads/012-Falla-Convento-2022.jpg" },
+    { premio: 2, censo: 34, comision: "Plaza del Pilar", artista: "Paco Torres", lema: "Escandal", año: 2022, imagen: "http://www.cendradigital.com/wp-content/uploads/034-Falla-Plaza-Pilar-2022.jpg" },
+
+    // 2021
+    { premio: 1, censo: 12, comision: "Convento Jerusalén", artista: "Pere Baenas", lema: "Desenmascarats", año: 2021, imagen: "http://www.cendradigital.com/wp-content/uploads/Falla-Convento-2021-1-1.jpg" },
+
+    // 2019
+    { premio: 1, censo: 197, comision: "L'Antiga de Campanar", artista: "Carlos Carsí", lema: "Juga, juga... i voràs", año: 2019, imagen: "http://www.cendradigital.com/wp-content/uploads/1-197.jpg" },
+
+    // 2018
+    { premio: 1, censo: 12, comision: "Convento Jerusalén", artista: "Pere Baenas", lema: "Per dalt o per baix", año: 2018, imagen: "http://www.cendradigital.com/wp-content/uploads/01c62287096654944dc2b35ffec6f6693162a62149_00001.jpg" },
+
+    // 2017
+    { premio: 1, censo: 197, comision: "L'Antiga de Campanar", artista: "Julio Monterrubio", lema: "Eterna seducció", año: 2017, imagen: "http://www.cendradigital.com/wp-content/uploads/01-197.jpg" },
+
+    // 2016
+    { premio: 1, censo: 28, comision: "Cuba-Literato Azorín", artista: "Carlos Carsí", lema: "Calla, canalla", año: 2016, imagen: "http://www.cendradigital.com/wp-content/uploads/Falla-Cuba-2016-2.jpg" },
+
+    // 2015
+    { premio: 1, censo: 34, comision: "Plaza del Pilar", artista: "Pere Baenas", lema: "Pantomima", año: 2015, imagen: "http://www.cendradigital.com/wp-content/uploads/03419.jpg" },
+
+    // 2014
+    { premio: 1, censo: 34, comision: "Plaza del Pilar", artista: "Pere Baenas", lema: "Escándalo", año: 2014, imagen: "http://www.cendradigital.com/wp-content/uploads/03416.jpg" }
 ];
 
 
