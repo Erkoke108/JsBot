@@ -1,24 +1,37 @@
-const { SlashCommandBuilder, EmbedBuilder, version } = require('discord.js');
-const os = require('os');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
+// Ajuste de ruta: subimos dos niveles para llegar a la raíz de src y entrar en models
+const ComandoLog = require('../../models/ComandoLog');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('stats')
-        .setDescription('Muestra el estado técnico del bot'),
-    async execute(interaction) {
-        // Suma de miembros de todos los servidores donde está el bot
-        const totalMembers = interaction.client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0);
-        
-        const embed = new EmbedBuilder()
-            .setColor('#5865F2')
-            .setTitle('📊 Estadísticas del Bot')
-            .addFields(
-                { name: '🌐 Servidores', value: `${interaction.client.guilds.cache.size}`, inline: true },
-                { name: '👥 Miembros', value: `${totalMembers}`, inline: true },
-                { name: '📡 Latencia', value: `${interaction.client.ws.ping}ms`, inline: true },
-                { name: '💻 RAM', value: `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`, inline: true }
-            );
+        .setDescription('Muestra las estadísticas de uso de los comandos.'),
 
-        await interaction.reply({ embeds: [embed] });
+    async execute(interaction, client) {
+        try {
+            // Tu lógica original de búsqueda en la base de datos
+            const stats = await ComandoLog.aggregate([
+                { $group: { _id: "$comando", count: { $sum: 1 } } },
+                { $sort: { count: -1 } }
+            ]);
+
+            if (stats.length === 0) {
+                return interaction.reply({ content: 'No hay estadísticas registradas aún.', flags: MessageFlags.Ephemeral });
+            }
+
+            const embed = new EmbedBuilder()
+                .setTitle('📊 Estadísticas de Uso')
+                .setColor('#0099ff')
+                .setTimestamp();
+
+            stats.forEach(stat => {
+                embed.addFields({ name: `/${stat._id}`, value: `Usado ${stat.count} veces`, inline: true });
+            });
+
+            await interaction.reply({ embeds: [embed] });
+        } catch (error) {
+            console.error('Error al obtener estadísticas:', error);
+            await interaction.reply({ content: 'Hubo un error al obtener las estadísticas.', flags: MessageFlags.Ephemeral });
+        }
     },
 };
