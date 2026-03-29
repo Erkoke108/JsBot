@@ -2,3 +2,12 @@ node_modules/
 .env
 package-lock.json
 *.txt
+.openclaw/workspace-state.json
+.openclaw/policy.yaml
+USER.md
+TOOLS.md
+SOUL.md
+schema.json
+IDENTITY.md
+HEARTBEAT.md
+AGENTS.md
