@@ -1,9 +1,9 @@
-const { MessageFlags, EmbedBuilder } = require('discord.js');
+const { MessageFlags, EmbedBuilder, Events } = require('discord.js');
 const ComandoLog = require('../../models/ComandoLog');
 const settings = require('../../settings');
 
 module.exports = {
-    name: 'interactionCreate',
+    name: Events.InteractionCreate,
     async execute(interaction, client) {
         if (!interaction.isChatInputCommand()) return;
 
@@ -30,16 +30,16 @@ module.exports = {
                     )
                     .setColor('#00ffcc')
                     .setTimestamp();
-                
+
                 await logChannel.send({ embeds: [embed] });
             }
 
             await command.execute(interaction, client);
         } catch (error) {
             console.error(`Error al ejecutar el comando ${interaction.commandName}:`, error);
-            
+
             const errorMessage = { content: '❌ Hubo un error al ejecutar este comando.', flags: MessageFlags.Ephemeral };
-            
+
             if (interaction.replied || interaction.deferred) {
                 await interaction.followUp(errorMessage);
             } else {
@@ -47,4 +47,4 @@ module.exports = {
             }
         }
     },
-};
+};
