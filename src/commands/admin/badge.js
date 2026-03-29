@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -7,7 +7,7 @@ module.exports = {
     async execute(interaction) {
         await interaction.reply({ 
             content: '✅ ¡Comando modular ejecutado! Los datos se han enviado a Discord.', 
-            ephemeral: true 
+            flags: MessageFlags.Ephemeral 
         });
     },
 };
